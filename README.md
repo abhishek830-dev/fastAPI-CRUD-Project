@@ -63,7 +63,7 @@ Clean and beginner-friendly project structure
     GitHub
 
 
-    fastAPI-CRUD-Project/
+  fastAPI-CRUD-Project/
 │
 ├── main.py
 
