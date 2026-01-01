@@ -106,8 +106,8 @@ function App() {
     } catch (err) {
       setError("Failed to fetch products");
     }
-      setLoading(false);
-    
+    setLoading(false);
+
   };
 
   // useEffect(() => {
@@ -190,7 +190,7 @@ function App() {
   // Reset form after submit / cancel
   // ======================
   const resetForm = () => {
-    setForm({ id: "", name: "", description: "", price: "", quantity: "", category:""});
+    setForm({ id: "", name: "", description: "", price: "", quantity: "", category: "" });
     setEditId(null);
   };
 
@@ -316,7 +316,7 @@ function App() {
           </button>
         </div>
       </header>
-      
+
 
       <div className="container">
         <div className="stats">
@@ -417,34 +417,30 @@ function App() {
                 <thead>
                   <tr>
                     <th
-                      className={`sortable ${
-                        sortField === "id" ? `sort-${sortDirection}` : ""
-                      }`}
+                      className={`sortable ${sortField === "id" ? `sort-${sortDirection}` : ""
+                        }`}
                       onClick={() => handleSort("id")}
                     >
                       ID
                     </th>
                     <th
-                      className={`sortable ${
-                        sortField === "name" ? `sort-${sortDirection}` : ""
-                      }`}
+                      className={`sortable ${sortField === "name" ? `sort-${sortDirection}` : ""
+                        }`}
                       onClick={() => handleSort("name")}
                     >
                       Name
                     </th>
                     <th>Description</th>
                     <th
-                      className={`sortable ${
-                        sortField === "price" ? `sort-${sortDirection}` : ""
-                      }`}
+                      className={`sortable ${sortField === "price" ? `sort-${sortDirection}` : ""
+                        }`}
                       onClick={() => handleSort("price")}
                     >
                       Price
                     </th>
                     <th
-                      className={`sortable ${
-                        sortField === "quantity" ? `sort-${sortDirection}` : ""
-                      }`}
+                      className={`sortable ${sortField === "quantity" ? `sort-${sortDirection}` : ""
+                        }`}
                       onClick={() => handleSort("quantity")}
                     >
                       Quantity
