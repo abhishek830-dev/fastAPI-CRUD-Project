@@ -34,12 +34,12 @@ app.add_middleware(
 def startup_event():
     print("👉 startup_event CALLED")
 
-    # Database initialize karna
-    init_db()
 
     # Create all defined tables of (SQLAlchemy models) in the database
     database_models.Base.metadata.create_all(bind=engine)
 
+    # Database initialize karna
+    init_db()
 
 # Route Endpoint (Test route)
 # Simple test route to check API running or not
