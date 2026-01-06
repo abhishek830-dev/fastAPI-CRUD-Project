@@ -36,6 +36,8 @@ function App() {
     description: "",
     price: "",
     quantity: "",
+    category: "",
+
   });
 
   // Edit mode ke liye product ID
@@ -164,7 +166,8 @@ function App() {
       if (
         sortField === "id" ||
         sortField === "price" ||
-        sortField === "quantity"
+        sortField === "quantity" ||
+        sortField ==  "category"
       ) {
         aVal = Number(aVal);
         bVal = Number(bVal);
@@ -232,6 +235,7 @@ function App() {
           id: Number(form.id),
           price: Number(form.price),
           quantity: Number(form.quantity),
+          category: (form.category)
         });
         toastSuccess("Product created successfully");
         console.log("Response: ", response);
@@ -244,7 +248,7 @@ function App() {
       resetForm();
       //fetchProducts();
     } catch (err) {
-      console.error("API ERROR:", err.response?.data || "err.message");
+      console.error("API ERROR:", err);
       toastError(err.response?.data.detail || "Operation failed");
     }
     setLoading(false);
@@ -411,7 +415,7 @@ function App() {
           <TaglineSection />
 
           <div className="card list-card">
-            <h2>Products</h2>(
+            <h2>Products</h2>{(
             <div className="scroll-x">
               <table className="product-table">
                 <thead>
@@ -445,6 +449,15 @@ function App() {
                     >
                       Quantity
                     </th>
+
+                     <th
+                      className={`sortable ${sortField === "category" ? `sort-${sortDirection}` : ""
+                        }`}
+                      onClick={() => handleSort("category")}
+                    >
+                      category
+                    </th>
+
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -460,6 +473,7 @@ function App() {
                       <td>
                         <span className="qty-badge">{p.quantity}</span>
                       </td>
+                      <td className="category-cell">{p.category}</td>
                       <td>
                         <div className="row-actions">
                           <button
