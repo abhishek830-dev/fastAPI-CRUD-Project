@@ -112,34 +112,16 @@ function App() {
 
   };
 
-  // useEffect(() => {
-  //   // Inline initial fetch to avoid referencing external deps
-  //   const run = async () => {
-  //     setLoading(true);
-  //     try {
-  //       const res = await api.get("/products/");
-  //       setProducts(res.data);
-  //       setError("");
-  //     } catch (err) {
-  //       setError("Failed to fetch products");
-  //     }
-  //     setLoading(false);
-  //   };
-  //   run();
-  // }, []);
-
-
-
 
   // sorting handler
   const handleSort = (field) => {
     // Agar same field pe click hua to direction toggle
-    if (sortField === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
+    if (sortField !== field) {
       setSortField(field);
       setSortDirection("asc");
+      return;
     }
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
   };
 
   // Filter + Sort combined (useMemo for performance)
@@ -167,7 +149,7 @@ function App() {
         sortField === "id" ||
         sortField === "price" ||
         sortField === "quantity" ||
-        sortField ==  "category"
+        sortField ===  "category"
       ) {
         aVal = Number(aVal);
         bVal = Number(bVal);
