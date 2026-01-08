@@ -23,7 +23,7 @@ How to manage a full-stack project using Git & GitHub
 
 ✨ Features :-
 
-Create, Read, Update, and Delete (CRUD) operations
+Create, Read, Update, and Delete (CRUD) operations.
 
 RESTful API structure
 
