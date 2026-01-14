@@ -291,7 +291,7 @@ function App() {
       <header className="topbar">
         <div className="brand">
           <span className="brand-badge">📦</span>
-          <h1>Abhishek Trac</h1>
+          <h1>Inventory Management System</h1>
         </div>
         <div className="top-actions">
           <button

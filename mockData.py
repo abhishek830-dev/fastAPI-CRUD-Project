@@ -1,5 +1,5 @@
-# Default In-memory Products
-# (sirf initial DB seeding ke liye)
+from models import Product
+
 products = [
     Product(id=1, name="phone", description="A smartphone", price=699.99, quantity=50, category = "Electronic device"),
     Product(id=2, name="Laptop", description="A powerful laptop", price=999.99, quantity=30, category = "Electronic device"),
