@@ -83,9 +83,8 @@ def init_db():
         db.close()
 
 
-# ==============================
 # API Endpoints
-# ==============================
+
 
 # 🔹 Get all products
 @app.get("/products")
