@@ -10,7 +10,7 @@ from mockData import products
 
 # Create the fastapi app instance
 # ye backend application object hai, sare routes isi se judte hai
-app = FastAPI()
+app = FastAPI(redirect_slashes=False)
 
 
 # Here we add the origins separately (& also we can add more than 1 origins)
