@@ -189,7 +189,7 @@ function App() {
     try {
       if (editId) {
         // update product
-        const response = await api.put(`/products${editId}`, {
+        const response = await api.put(`/products/${editId}`, {
           ...form,
           id: Number(form.id),
           price: Number(form.price),
@@ -260,7 +260,7 @@ function App() {
     setMessage("");
     setError("");
     try {
-      await api.delete(`/products${id}`);
+      await api.delete(`/products/${id}`);
       toastSuccess("Product deleted successfully");
       // fetchProducts();
 
