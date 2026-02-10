@@ -15,15 +15,15 @@ app = FastAPI()
 
 # Here we add the origins separately (& also we can add more than 1 origins)
 # Ye wo frontend URLs hai jinko backend allow krega
-origins = [
-    "http://localhost:3000",    # React Frontend
-    "https://fast-api-crud-project.vercel.app/",
-    # Add another frontend origins as needed (e.g., production domain)
-]
+# origins = [
+#     "http://localhost:3000",    # React Frontend
+#     "https://fast-api-crud-project.vercel.app/",
+#     # Add another frontend origins as needed (e.g., production domain)
+# ]
 
 app.add_middleware(
     CORSMiddleware,         # Frontend se API calls allow krta hai 
-    allow_origins=[origins],    # Allow all origins (for development)
+    allow_origins=["http://localhost:3000", "https://fast-api-crud-project.vercel.app"], # Allow all origins (for development)
     allow_credentials=True, #Allow cookies and authorization headers
     allow_methods=["*"],    #Allow all standard HTTP methods (GET, PUT, POST, DELETE etc)
     allow_headers=["*"],    #Allow all headers
@@ -99,7 +99,7 @@ def get_all_products(db: Session = Depends(get_db)):
 
 
 # 🔹 Get product by ID
-@app.get("/products{id}")
+@app.get("/products/{id}")
 def get_product_by_id(id: int, db: Session = Depends(get_db)):
     # ID ke basis par single product fetch
     db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
