@@ -103,7 +103,7 @@ myenv\Scripts\activate
 
 Install backend dependencies: pip install fastapi uvicorn sqlalchemy psycopg2
 
-Run the FastAPI server : uvicorn main:app --reload
+Run the FastAPI server : uvicorn main:app --reload --env-file .env
 
 Backend will be available at: http://127.0.0.1:8000
 
