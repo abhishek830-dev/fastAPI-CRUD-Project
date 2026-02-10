@@ -23,7 +23,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,         # Frontend se API calls allow krta hai 
-    allow_origins=["https://fast-api-crud-project.vercel.app"], # Allow all origins (for development)
+    allow_origins=["*"], # Allow all origins (for development)
     allow_credentials=True, #Allow cookies and authorization headers
     allow_methods=["*"],    #Allow all standard HTTP methods (GET, PUT, POST, DELETE etc)
     allow_headers=["*"],    #Allow all headers
