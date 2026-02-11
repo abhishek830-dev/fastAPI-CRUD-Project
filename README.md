@@ -6,7 +6,7 @@ The project focuses on building RESTful APIs using FastAPI, integrating a Postgr
 The goal of this project is to practice API design, database operations, frontend-backend communication, and Git/GitHub workflow in a structured and practical way.
 
 
-🚀 What this project demonstrates:-
+🚀 What this project demonstrates:- 
 
 How to build REST APIs using FastAPI
 
