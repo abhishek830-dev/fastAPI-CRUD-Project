@@ -1,135 +1,125 @@
-from fastapi import Depends, FastAPI
+import os
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+
 from models import Product, ProductResponse
 from database import SessionLocal, engine
 import database_models
-from sqlalchemy.orm import Session
 from mockData import products
 
 
+# ============================
+#       APP INSTANCE
+# ============================
 
-# Create the fastapi app instance
-# ye backend application object hai, sare routes isi se judte hai
 app = FastAPI()
 
 
-# Here we add the origins separately (& also we can add more than 1 origins)
-# Ye wo frontend URLs hai jinko backend allow krega
+# ============================
+#           CORS
+# ============================
+
+# Explicitly allow your frontend URLs
 origins = [
-    "http://localhost:3000",    # React Frontend
-    # Add another frontend origins as needed (e.g., production domain)
+    "http://localhost:5173",  # Local Vite frontend
+    "https://fast-api-crud-project.vercel.app",  # Production Vercel frontend
 ]
 
 app.add_middleware(
-    CORSMiddleware,         # Frontend se API calls allow krta hai 
-    allow_origins=origins,  # sirf specified origins allowed (like above)
-    allow_credentials=True, #Allow cookies and authorization headers
-    allow_methods=["*"],    #Allow all standard HTTP methods (GET, PUT, POST, DELETE etc)
-    allow_headers=["*"],    #Allow all headers
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Application startup event function using the decorator
 
-# App start hote hi ye function call hota hai
+# ============================
+#        STARTUP EVENT
+# ============================
+
 @app.on_event("startup")
 def startup_event():
-    print("👉 startup_event CALLED")
-
-
-    # Create all defined tables of (SQLAlchemy models) in the database
+    print("🚀 App Starting...")
     database_models.Base.metadata.create_all(bind=engine)
-
-    # Database initialize karna
     init_db()
 
-# Route Endpoint (Test route)
-# Simple test route to check API running or not
+
 @app.get("/")
 def greet():
-    return "Hey Abhishek! API is running"
+    return {"message": "API is running 🚀 after new Cors Changes"}
 
 
-# Database Session Dependency
+# ============================
+#     DATABASE DEPENDENCY
+# ============================
 
-# Ye function har API request ke liye
-# ek naya database session deta hai
 def get_db():
-    db = SessionLocal()    # Har API request ke liye DB session deta hai
-    try:
-        yield db           # API ko session provide karta hai
-    finally:
-        db.close()         # Request complete hone ke baad session close
-    
-
-
-# Database Initialization Logic
-
-# App startup par DB me data hai ya nahi ye check karta hai
-def init_db():
-    print("init_db CALLED")
     db = SessionLocal()
     try:
-        print("🔥 BEFORE COUNT")
-        count = db.query(database_models.Product).count()
-        print("COUNT =", count)
-        if count == 0:
-            for product in products:
-                db.add(database_models.Product(**product.model_dump()))
-            db.commit()
-        
-    except Exception as e:
-        print(e)
+        yield db
     finally:
         db.close()
 
 
-# API Endpoints
+# ============================
+#       INIT DATABASE
+# ============================
+
+def init_db():
+    db = SessionLocal()
+    try:
+        count = db.query(database_models.Product).count()
+        if count == 0:
+            for product in products:
+                db.add(database_models.Product(**product.model_dump()))
+            db.commit()
+            print("✅ Mock data inserted")
+    except Exception as e:
+        print("DB INIT ERROR:", e)
+    finally:
+        db.close()
 
 
-# 🔹 Get all products
-@app.get("/products")
+# ============================
+#           ROUTES
+# ============================
+
+@app.get("/products", response_model=list[ProductResponse])
 def get_all_products(db: Session = Depends(get_db)):
-    # Database se saare products fetch karta hai
-    db_products = db.query(database_models.Product).all()
-    return db_products
-    # db = SessionLocal()
-    # db.query()
-    # return products 
+    return db.query(database_models.Product).all()
 
 
-# 🔹 Get product by ID
-@app.get("/products/{id}")
+@app.get("/products/{id}", response_model=ProductResponse)
 def get_product_by_id(id: int, db: Session = Depends(get_db)):
-    # ID ke basis par single product fetch
-    db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
-    if db_product:  
-        return db_product  
-    #return "product not found"
+    product = db.query(database_models.Product).filter(
+        database_models.Product.id == id
+    ).first()
+
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    return product
 
 
-# 🔹 Add new product
 @app.post("/products", response_model=ProductResponse)
 def add_product(product: Product, db: Session = Depends(get_db)):
-    # Pydantic model ko SQLAlchemy model me convert kar rahe hain
     new_product = database_models.Product(**product.model_dump())
-    
     db.add(new_product)
     db.commit()
-    
-    # Database se updated object reload karta hai (ID generate hoti hai)
-    db.refresh(new_product)   # 👈 gets generated ID
-
+    db.refresh(new_product)
     return new_product
 
 
-# 🔹 Update existing product
 @app.put("/products/{id}", response_model=ProductResponse)
 def update_product(id: int, product: Product, db: Session = Depends(get_db)):
-    db_product = (
-        db.query(database_models.Product)
-        .filter(database_models.Product.id == id)
-        .first()
-    )
+    db_product = db.query(database_models.Product).filter(
+        database_models.Product.id == id
+    ).first()
+
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Product not found")
 
     db_product.name = product.name
     db_product.description = product.description
@@ -138,19 +128,21 @@ def update_product(id: int, product: Product, db: Session = Depends(get_db)):
     db_product.category = product.category
 
     db.commit()
-    db.refresh(db_product)   # 👈 updated data reload
+    db.refresh(db_product)
 
     return db_product
 
 
-
-
 @app.delete("/products/{id}")
 def delete_product(id: int, db: Session = Depends(get_db)):
-    db_product = db.query(database_models.Product).filter(database_models.Product.id == id).first()
-    if db_product:
-        db.delete(db_product)
-        db.commit()
-        return "Product have been deleted"
-    else:   
-        return "Product not found"
+    db_product = db.query(database_models.Product).filter(
+        database_models.Product.id == id
+    ).first()
+
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    db.delete(db_product)
+    db.commit()
+
+    return {"message": "Product deleted successfully"}
