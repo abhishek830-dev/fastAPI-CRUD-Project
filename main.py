@@ -12,18 +12,11 @@ from mockData import products
 # ye backend application object hai, sare routes isi se judte hai
 app = FastAPI()
 
-
-# Here we add the origins separately (& also we can add more than 1 origins)
-# Ye wo frontend URLs hai jinko backend allow krega
-# origins = [
-#     "http://localhost:3000",    # React Frontend
-#     "https://fast-api-crud-project.vercel.app/",
-#     # Add another frontend origins as needed (e.g., production domain)
-# ]
-
+# Add CORS middleware FIRST (before all other middleware)
+# This must be the first middleware added
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=".*",   # allows every origin
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
