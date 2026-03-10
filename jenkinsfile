@@ -5,7 +5,7 @@ pipeline {
 
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/abhishek830-dev/fastAPI-CRUD-Project'
+                git 'https://github.com/abhishek830-dev/fastAPI-CRUD-Project.git'
             }
         }
 
