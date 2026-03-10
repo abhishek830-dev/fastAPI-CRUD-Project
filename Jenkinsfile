@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh 'docker stop fastapi-container || true'
                 sh 'docker rm fastapi-container || true'
-                sh 'docker run -d -p 8000:8000 --name fastapi-container fastapi-crud-app'
+                sh 'docker run -d -p 8000:8000 --name fastapi-container -e DB_URL="DB_URL=postgresql://postgres:Abhishek%40123@host.docker.internal:5432/mydatabase" fastapi-crud-app'
             }
         }
 
