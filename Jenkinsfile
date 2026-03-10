@@ -3,11 +3,11 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/abhishek830-dev/fastAPI-CRUD-Project.git'
-            }
-        }
+        // stage('Clone Repository') {
+        //     steps {
+        //         git 'https://github.com/abhishek830-dev/fastAPI-CRUD-Project.git'
+        //     }
+        // }
 
         stage('Build Docker Image') {
             steps {
