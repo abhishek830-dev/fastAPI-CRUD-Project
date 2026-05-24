@@ -23,7 +23,7 @@ app = FastAPI()
 # Explicitly allow your frontend URLs
 origins = [
     "http://localhost:5173",  # Local Vite frontend
-    "https://fast-api-crud-project.vercel.app",  # Production Vercel frontend
+    "https://fast-api-crud-project-irwpgylgo.vercel.app",  # Production Vercel frontend
 ]
 
 app.add_middleware(
