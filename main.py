@@ -26,6 +26,7 @@ app.add_middleware(
     # Explicit allowed origins
     allow_origins=[
         "http://localhost:5173",
+        "https://fast-api-crud-project.vercel.app",
     ],
 
     # Allow all similar Vercel preview deployments
@@ -71,24 +72,15 @@ def get_db():
 
 def init_db():
     db = SessionLocal()
-
     try:
         count = db.query(database_models.Product).count()
-
         if count == 0:
             for product in products:
-                db.add(
-                    database_models.Product(
-                        **product.model_dump()
-                    )
-                )
-
+                db.add(database_models.Product(**product.model_dump()))
             db.commit()
             print("✅ Mock data inserted")
-
     except Exception as e:
         print("DB INIT ERROR:", e)
-
     finally:
         db.close()
 
@@ -97,80 +89,40 @@ def init_db():
 #           ROUTES
 # ============================
 
-@app.get(
-    "/products",
-    response_model=list[ProductResponse]
-)
-def get_all_products(
-    db: Session = Depends(get_db)
-):
-    return db.query(
-        database_models.Product
-    ).all()
+@app.get("/products", response_model=list[ProductResponse])
+def get_all_products(db: Session = Depends(get_db)):
+    return db.query(database_models.Product).all()
 
 
-@app.get(
-    "/products/{id}",
-    response_model=ProductResponse
-)
-def get_product_by_id(
-    id: int,
-    db: Session = Depends(get_db)
-):
-    product = db.query(
-        database_models.Product
-    ).filter(
+@app.get("/products/{id}", response_model=ProductResponse)
+def get_product_by_id(id: int, db: Session = Depends(get_db)):
+    product = db.query(database_models.Product).filter(
         database_models.Product.id == id
     ).first()
 
     if not product:
-        raise HTTPException(
-            status_code=404,
-            detail="Product not found"
-        )
+        raise HTTPException(status_code=404, detail="Product not found")
 
     return product
 
 
-@app.post(
-    "/products",
-    response_model=ProductResponse
-)
-def add_product(
-    product: Product,
-    db: Session = Depends(get_db)
-):
-    new_product = database_models.Product(
-        **product.model_dump()
-    )
-
+@app.post("/products", response_model=ProductResponse)
+def add_product(product: Product, db: Session = Depends(get_db)):
+    new_product = database_models.Product(**product.model_dump())
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
-
     return new_product
 
 
-@app.put(
-    "/products/{id}",
-    response_model=ProductResponse
-)
-def update_product(
-    id: int,
-    product: Product,
-    db: Session = Depends(get_db)
-):
-    db_product = db.query(
-        database_models.Product
-    ).filter(
+@app.put("/products/{id}", response_model=ProductResponse)
+def update_product(id: int, product: Product, db: Session = Depends(get_db)):
+    db_product = db.query(database_models.Product).filter(
         database_models.Product.id == id
     ).first()
 
     if not db_product:
-        raise HTTPException(
-            status_code=404,
-            detail="Product not found"
-        )
+        raise HTTPException(status_code=404, detail="Product not found")
 
     db_product.name = product.name
     db_product.description = product.description
@@ -185,25 +137,15 @@ def update_product(
 
 
 @app.delete("/products/{id}")
-def delete_product(
-    id: int,
-    db: Session = Depends(get_db)
-):
-    db_product = db.query(
-        database_models.Product
-    ).filter(
+def delete_product(id: int, db: Session = Depends(get_db)):
+    db_product = db.query(database_models.Product).filter(
         database_models.Product.id == id
     ).first()
 
     if not db_product:
-        raise HTTPException(
-            status_code=404,
-            detail="Product not found"
-        )
+        raise HTTPException(status_code=404, detail="Product not found")
 
     db.delete(db_product)
     db.commit()
 
-    return {
-        "message": "Product deleted successfully"
-    }
+    return {"message": "Product deleted successfully"}
