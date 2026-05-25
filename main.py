@@ -20,20 +20,15 @@ app = FastAPI()
 #           CORS
 # ============================
 
-# Explicitly allow your frontend URLs. Use environment variables in production.
-# Example: ALLOWED_ORIGINS=https://fast-api-crud-project-irwpgylgo.vercel.app,https://fast-api-crud-project-o1ito9hke.vercel.app
-# Example regex: ALLOW_ORIGIN_REGEX=^https:\/\/fast-api-crud-project(-[a-z0-9]+)?\.vercel\.app$
-origins_env = os.getenv("ALLOWED_ORIGINS", "")
-allow_origin_regex = os.getenv(
-    "ALLOW_ORIGIN_REGEX",
-    r"^https:\/\/fast-api-crud-project(-[a-z0-9]+)?\.vercel\.app$",
-)
-origins = [o.strip() for o in origins_env.split(",") if o.strip()]
+# Explicitly allow your frontend URLs
+origins = [
+    "http://localhost:5173",  # Local Vite frontend
+    "https://fast-api-crud-project-irwpgylgo.vercel.app",  # Production Vercel frontend
+]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex=allow_origin_regex,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

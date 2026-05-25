@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import axios from "axios"; // Axios HTTP client (API calls ke liye)
+import axios from "axios";   // Axios HTTP client (API calls ke liye)
 import "./App.css";
 import TaglineSection from "./TaglineSection";
 import { ToastContainer, toast } from "react-toastify";
@@ -13,15 +13,15 @@ import {
   toastWarning,
 } from "./utils/toast";
 
+
 // Axios instance create kiya with base backend URL
-// Use environment variable in production; fallback keeps current URL for local/testing.
+// Isse baar-baar full URL likhne ki zarurat nahi padti
 const api = axios.create({
-  baseURL:
-    process.env.REACT_APP_API_URL ||
-    "https://fastapi-crud-project-2-2sm8.onrender.com",
+  baseURL: "https://fastapi-crud-project-2-2sm8.onrender.com",
 });
 
 function App() {
+
   // ======================
   // State Declarations
   // ======================
@@ -37,6 +37,7 @@ function App() {
     price: "",
     quantity: "",
     category: "",
+
   });
 
   // Edit mode ke liye product ID
@@ -60,6 +61,9 @@ function App() {
   // Sorting direction (asc / desc)
   const [sortDirection, setSortDirection] = useState("asc");
 
+
+
+
   // Auto-dismiss messages after 5 seconds - msg change hota hai to 5 sec bad usko empty kr deta hai
   useEffect(() => {
     if (message) {
@@ -72,10 +76,15 @@ function App() {
     }
   }, [message]);
 
+
+
   // Initial load: fetch products
   useEffect(() => {
     fetchProducts();
   }, []);
+
+
+
 
   // useEffect - error auto dismiss - error msg ko 5 sec bad clear krta hai
   useEffect(() => {
@@ -86,6 +95,8 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [error]);
+
+
 
   // Fetch all products from backend
   const fetchProducts = async () => {
@@ -98,7 +109,9 @@ function App() {
       setError("Failed to fetch products");
     }
     setLoading(false);
+
   };
+
 
   // sorting handler
   const handleSort = (field) => {
@@ -122,7 +135,7 @@ function App() {
         (p) =>
           String(p.id).includes(q) ||
           p.name?.toLowerCase().includes(q) ||
-          p.description?.toLowerCase().includes(q),
+          p.description?.toLowerCase().includes(q)
       );
     }
 
@@ -136,7 +149,7 @@ function App() {
         sortField === "id" ||
         sortField === "price" ||
         sortField === "quantity" ||
-        sortField === "category"
+        sortField ===  "category"
       ) {
         aVal = Number(aVal);
         bVal = Number(bVal);
@@ -157,20 +170,15 @@ function App() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+
   // ======================
   // Reset form after submit / cancel
   // ======================
   const resetForm = () => {
-    setForm({
-      id: "",
-      name: "",
-      description: "",
-      price: "",
-      quantity: "",
-      category: "",
-    });
+    setForm({ id: "", name: "", description: "", price: "", quantity: "", category: "" });
     setEditId(null);
   };
+
 
   // Create or update product**************************************************
   const handleSubmit = async (e) => {
@@ -186,10 +194,11 @@ function App() {
           id: Number(form.id),
           price: Number(form.price),
           quantity: Number(form.quantity),
-          category: form.category,
+          category: (form.category),
         });
         console.log("Update: ", response);
         toastSuccess("Product updated successfully");
+
 
         // UI me product update
         if (response.data) {
@@ -199,7 +208,7 @@ function App() {
                 return response.data;
               }
               return item;
-            }),
+            })
           );
         }
       } else {
@@ -209,7 +218,7 @@ function App() {
           id: Number(form.id),
           price: Number(form.price),
           quantity: Number(form.quantity),
-          category: form.category,
+          category: (form.category)
         });
         toastSuccess("Product created successfully");
         console.log("Response: ", response);
@@ -266,11 +275,13 @@ function App() {
     setLoading(false);
   };
 
+
   //======================
   // Price formatting helper
   // ======================
   const currency = (n) =>
     typeof n === "number" ? n.toFixed(2) : Number(n || 0).toFixed(2);
+
 
   // ======================
   // JSX UI Rendering
@@ -292,6 +303,7 @@ function App() {
           </button>
         </div>
       </header>
+
 
       <div className="container">
         <div className="stats">
@@ -386,104 +398,94 @@ function App() {
           <TaglineSection />
 
           <div className="card list-card">
-            <h2>Products</h2>
-            {
-              <div className="scroll-x">
-                <table className="product-table">
-                  <thead>
-                    <tr>
-                      <th
-                        className={`sortable ${
-                          sortField === "id" ? `sort-${sortDirection}` : ""
+            <h2>Products</h2>{(
+            <div className="scroll-x">
+              <table className="product-table">
+                <thead>
+                  <tr>
+                    <th
+                      className={`sortable ${sortField === "id" ? `sort-${sortDirection}` : ""
                         }`}
-                        onClick={() => handleSort("id")}
-                      >
-                        ID
-                      </th>
-                      <th
-                        className={`sortable ${
-                          sortField === "name" ? `sort-${sortDirection}` : ""
+                      onClick={() => handleSort("id")}
+                    >
+                      ID
+                    </th>
+                    <th
+                      className={`sortable ${sortField === "name" ? `sort-${sortDirection}` : ""
                         }`}
-                        onClick={() => handleSort("name")}
-                      >
-                        Name
-                      </th>
-                      <th>Description</th>
-                      <th
-                        className={`sortable ${
-                          sortField === "price" ? `sort-${sortDirection}` : ""
+                      onClick={() => handleSort("name")}
+                    >
+                      Name
+                    </th>
+                    <th>Description</th>
+                    <th
+                      className={`sortable ${sortField === "price" ? `sort-${sortDirection}` : ""
                         }`}
-                        onClick={() => handleSort("price")}
-                      >
-                        Price
-                      </th>
-                      <th
-                        className={`sortable ${
-                          sortField === "quantity"
-                            ? `sort-${sortDirection}`
-                            : ""
+                      onClick={() => handleSort("price")}
+                    >
+                      Price
+                    </th>
+                    <th
+                      className={`sortable ${sortField === "quantity" ? `sort-${sortDirection}` : ""
                         }`}
-                        onClick={() => handleSort("quantity")}
-                      >
-                        Quantity
-                      </th>
+                      onClick={() => handleSort("quantity")}
+                    >
+                      Quantity
+                    </th>
 
-                      <th
-                        className={`sortable ${
-                          sortField === "category"
-                            ? `sort-${sortDirection}`
-                            : ""
+                     <th
+                      className={`sortable ${sortField === "category" ? `sort-${sortDirection}` : ""
                         }`}
-                        onClick={() => handleSort("category")}
-                      >
-                        category
-                      </th>
+                      onClick={() => handleSort("category")}
+                    >
+                      category
+                    </th>
 
-                      <th>Actions</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.map((p) => (
+                    <tr key={p.id}>
+                      <td>{p.id}</td>
+                      <td className="name-cell">{p.name}</td>
+                      <td className="desc-cell" title={p.description}>
+                        {p.description}
+                      </td>
+                      <td className="price-cell">${currency(p.price)}</td>
+                      <td>
+                        <span className="qty-badge">{p.quantity}</span>
+                      </td>
+                      <td className="category-cell">{p.category}</td>
+                      <td>
+                        <div className="row-actions">
+                          <button
+                            className="btn btn-edit"
+                            onClick={() => handleEdit(p)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn btn-delete"
+                            onClick={() => handleDelete(p.id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {filteredProducts.map((p) => (
-                      <tr key={p.id}>
-                        <td>{p.id}</td>
-                        <td className="name-cell">{p.name}</td>
-                        <td className="desc-cell" title={p.description}>
-                          {p.description}
-                        </td>
-                        <td className="price-cell">${currency(p.price)}</td>
-                        <td>
-                          <span className="qty-badge">{p.quantity}</span>
-                        </td>
-                        <td className="category-cell">{p.category}</td>
-                        <td>
-                          <div className="row-actions">
-                            <button
-                              className="btn btn-edit"
-                              onClick={() => handleEdit(p)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="btn btn-delete"
-                              onClick={() => handleDelete(p.id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                    {filteredProducts.length === 0 && (
-                      <tr>
-                        <td colSpan={6} className="empty">
-                          No products found.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            }
+                  ))}
+                  {filteredProducts.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="empty">
+                        No products found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            )}
           </div>
         </div>
       </div>
